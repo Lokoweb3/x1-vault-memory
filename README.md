@@ -42,6 +42,37 @@ Only your wallet keypair can decrypt. Even if someone finds the CID, your data s
 ---
 
 ## Installation
+
+### For OpenClaw Agents
+
+1. Clone into your OpenClaw workspace:
+``````````bash
+cd /home/node/.openclaw/workspace
+git clone https://github.com/Lokoweb3/x1-vault-memory.git
+cd x1-vault-memory
+npm install
+`````````
+
+2. Add environment variables to your docker-compose.yml:
+````````yaml
+environment:
+  PINATA_JWT: ${PINATA_JWT}
+```````
+
+3. Add PINATA_JWT to your .env file:
+``````bash
+echo "PINATA_JWT=your_token_here" >> ~/openclaw/.env
+`````
+
+4. Restart the container:
+````bash
+cd ~/openclaw
+docker compose down && docker compose up -d
+```
+
+5. Tell your agent about the skill:
+> "You have a new skill called x1-vault-memory. You can backup your memory with node x1-vault-memory/src/backup.js and restore with node x1-vault-memory/src/restore.js CID. Save this to your memory."
+
 ```bash
 cd /path/to/openclaw/workspace
 git clone https://github.com/Lokoweb3/x1-vault-memory.git
