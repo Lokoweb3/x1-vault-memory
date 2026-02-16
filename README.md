@@ -97,6 +97,19 @@ solana config set --url https://rpc.testnet.x1.xyz
 ```
 
 
+### 0. Configure for X1 Testnet
+
+X1 is SVM-compatible, so it uses Solana CLI tools. Set your CLI to X1 testnet:
+
+````bash
+# Install Solana CLI if you dont have it
+sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
+
+# Set to X1 testnet
+solana config set --url https://rpc.testnet.x1.xyz
+```
+
+
 ### 1. Set Environment Variables
 ```bash
 export PINATA_JWT="your_pinata_jwt_here"
