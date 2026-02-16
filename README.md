@@ -141,7 +141,7 @@ Every backup is logged to vault-log.json:
 ]
 ```
 
-CIDs are also recorded on-chain. Check your wallet's transaction history on the [X1 Explorer](https://explorer.mainnet.x1.xyz).
+CIDs are also recorded on-chain. Check your wallet's transaction history on the [X1 Explorer](https://explorer.testnet.x1.xyz).
 
 ---
 
