@@ -75,6 +75,15 @@ export X1_RPC_URL="https://rpc.testnet.x1.xyz"
 ### 2. Create a Wallet Keypair
 ```bash
 solana-keygen new --outfile wallet.json --no-bip39-passphrase
+
+# View your wallet address
+solana address --keypair wallet.json
+
+# View your private key (base58)
+cat wallet.json
+
+# Check your balance
+solana balance --keypair wallet.json --url https://rpc.testnet.x1.xyz
 ```
 
 > ⚠️ **Keep wallet.json safe. Never commit it to GitHub. This is your encryption key.**
