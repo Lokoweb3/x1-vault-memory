@@ -90,7 +90,7 @@ node x1-vault-memory/src/backup.js
 
 Output:
 ```
-Backup uploaded, CID: QmRiJaqfafwbqxGxg3X4Bu6bBLVos4KWTgdUZBjEytPhKv
+Backup uploaded, CID: QmExampleCID123456789abcdefghijklmnopqrstuv
 Logged backup CID to vault-log.json
 ```
 
@@ -114,7 +114,7 @@ Every backup is logged to vault-log.json:
 [
   {
     "timestamp": "2026-02-16T09:48:38.207Z",
-    "cid": "QmRiJaqfafwbqxGxg3X4Bu6bBLVos4KWTgdUZBjEytPhKv"
+    "cid": "QmExampleCID123456789abcdefghijklmnopqrstuv"
   }
 ]
 ```
