@@ -1,3 +1,3 @@
 set -euo pipefail
 cd /home/node/.openclaw/workspace
-node vault-backup/restore.js "$@"
+node x1-vault-memory/src/restore.js "$@"

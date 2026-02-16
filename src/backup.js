@@ -1,0 +1,72 @@
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+const tar = require('tar');
+const { uploadToIPFS } = require('./upload');
+
+// Paths to backup
+const filesToBackup = [
+  'IDENTITY.md',
+  'SOUL.md',
+  'USER.md',
+  'TOOLS.md',
+];
+const memoryDir = path.resolve(__dirname, '..', 'memory');
+
+async function createBackup() {
+  // Create a temporary tar.gz archive
+  const archivePath = path.resolve(__dirname, 'backup.tar.gz');
+  const tarFiles = filesToBackup.map(f => path.resolve(__dirname, '..', f));
+  // Include memory directory
+  const cwd = path.resolve(__dirname, '..');
+  await tar.c(
+    {
+      gzip: true,
+      file: archivePath,
+      cwd,
+    },
+    [...filesToBackup, 'memory']
+  );
+
+  // Load wallet secret key
+  const walletPath = path.resolve(__dirname, '..', 'x1_vault_cli', 'wallet.json');
+  const wallet = JSON.parse(fs.readFileSync(walletPath, 'utf8'));
+  const secretKey = Buffer.from(wallet.secretKey);
+  // Derive symmetric key from secretKey using SHA-256
+  const key = crypto.createHash('sha256').update(secretKey).digest();
+  const iv = crypto.randomBytes(12); // for AES-256-GCM
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+  const input = fs.createReadStream(archivePath);
+  const encryptedPath = archivePath + '.enc';
+  const output = fs.createWriteStream(encryptedPath);
+  input.pipe(cipher).pipe(output);
+  await new Promise((res, rej) => {
+    output.on('finish', () => {
+      // Append auth tag
+      const authTag = cipher.getAuthTag();
+      fs.appendFileSync(encryptedPath, authTag);
+      res();
+    });
+    output.on('error', rej);
+  });
+
+  // Upload encrypted backup to Pinata
+  const cid = await uploadToIPFS(encryptedPath);
+  console.log('Backup uploaded, CID:', cid);
+
+  // Log CID with timestamp
+  const logPath = path.resolve(__dirname, '..', 'vault-log.json');
+  const entry = { timestamp: new Date().toISOString(), cid };
+  let log = [];
+  if (fs.existsSync(logPath)) {
+    log = JSON.parse(fs.readFileSync(logPath, 'utf8'));
+  }
+  log.push(entry);
+  fs.writeFileSync(logPath, JSON.stringify(log, null, 2));
+  console.log('Logged backup CID to vault-log.json');
+}
+
+createBackup().catch(err => {
+  console.error('Backup failed:', err);
+  process.exit(1);
+});
