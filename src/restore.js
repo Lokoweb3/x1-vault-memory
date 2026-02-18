@@ -43,7 +43,12 @@ function validateCID(cid) {
 function cleanupFile(filePath) {
   try {
     if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+      const stat = fs.statSync(filePath);
+      if (stat.isDirectory()) {
+        fs.rmSync(filePath, { recursive: true });
+      } else {
+        fs.unlinkSync(filePath);
+      }
     }
   } catch (err) {
     console.error('Failed to clean up', filePath, err.message);
