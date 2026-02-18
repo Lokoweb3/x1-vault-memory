@@ -32,6 +32,23 @@ async function createBackup() {
     [...filesToBackup, 'memory']
   );
 
+  // Generate SHA-256 hash of archive before encryption
+  const archiveBuffer = fs.readFileSync(archivePath);
+  const checksum = crypto.createHash('sha256').update(archiveBuffer).digest('hex');
+  const checksumPath = path.resolve(__dirname, 'checksum.txt');
+  fs.writeFileSync(checksumPath, checksum);
+  console.log('Archive checksum:', checksum);
+
+  // Create payload with archive + checksum
+  const payloadPath = path.resolve(__dirname, 'payload.tar');
+  await tar.c(
+    {
+      file: payloadPath,
+      cwd: __dirname,
+    },
+    ['backup.tar.gz', 'checksum.txt']
+  );
+
   // Load wallet secret key
   const walletPath = path.resolve(__dirname, '../..', 'x1_vault_cli', 'wallet.json');
   const wallet = JSON.parse(fs.readFileSync(walletPath, 'utf8'));
@@ -40,7 +57,7 @@ async function createBackup() {
   const key = crypto.createHash('sha256').update(secretKey).digest();
   const iv = crypto.randomBytes(12); // for AES-256-GCM
   const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
-  const input = fs.createReadStream(archivePath);
+  const input = fs.createReadStream(payloadPath);
   const encryptedPath = archivePath + '.enc';
   const output = fs.createWriteStream(encryptedPath);
   input.pipe(cipher).pipe(output);
