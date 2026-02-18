@@ -1,8 +1,11 @@
-const { Connection, Keypair, Transaction, SystemProgram } = require('@solana/web3.js');
+const { Connection, Keypair, Transaction, SystemProgram, PublicKey } = require('@solana/web3.js');
 const fs = require('fs');
 
 // X1 Mainnet RPC
 const RPC_URL = process.env.X1_RPC_URL || 'https://rpc.mainnet.x1.xyz';
+
+// Solana Memo Program ID
+const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnHnM4C8A6ZfjZJdP8KDnE6b2T');
 
 async function anchorCID(cid, walletPath) {
   try {
@@ -25,18 +28,25 @@ async function anchorCID(cid, walletPath) {
       throw new Error('Insufficient balance. Need at least 0.002 XN for transaction fee.');
     }
     
-    // Try with a simple transfer instruction
+    // Create memo instruction with CID embedded
+    const memoInstruction = {
+      programId: MEMO_PROGRAM_ID,
+      keys: [],
+      data: Buffer.from(cid, 'utf8'),
+    };
+    
+    // Add a minimal transfer to satisfy transaction requirements
     const transferInstruction = SystemProgram.transfer({
       fromPubkey: keypair.publicKey,
       toPubkey: keypair.publicKey,
       lamports: 0,
     });
     
-    const transaction = new Transaction().add(transferInstruction);
-    console.log('Transaction created');
+    const transaction = new Transaction().add(memoInstruction).add(transferInstruction);
+    console.log('Transaction created with CID memo:', cid);
     
     // Send transaction
-    console.log('Submitting transaction to X1 mainnet for CID:', cid);
+    console.log('Submitting transaction to X1 mainnet...');
     const signature = await connection.sendTransaction(transaction, [keypair]);
     
     // Wait for confirmation

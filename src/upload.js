@@ -1,15 +1,21 @@
 const FormData = require('form-data');
 const https = require('https');
+const fs = require('fs');
 
-function uploadToIPFS(buffer) {
+function uploadToIPFS(filePathOrBuffer) {
   const jwt = process.env.PINATA_JWT;
   if (!jwt) {
     throw new Error('PINATA_JWT environment variable not set');
   }
 
   return new Promise((resolve, reject) => {
+    // Read file if path is provided, otherwise use buffer directly
+    const buffer = Buffer.isBuffer(filePathOrBuffer) 
+      ? filePathOrBuffer 
+      : fs.readFileSync(filePathOrBuffer);
+    
     const form = new FormData();
-    form.append('file', Buffer.from(buffer), {
+    form.append('file', buffer, {
       filename: 'encrypted.bin',
       contentType: 'application/octet-stream',
     });

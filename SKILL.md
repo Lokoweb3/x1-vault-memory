@@ -1,6 +1,6 @@
 ---
 name: x1-vault-memory
-description: Backup and restore OpenClaw agent memory to IPFS with NaCl encryption and X1 blockchain CID anchoring
+description: Backup and restore OpenClaw agent memory to IPFS with AES-256-GCM encryption and X1 blockchain CID anchoring
 version: 1.1.0
 author: Lokoweb3
 homepage: https://github.com/Lokoweb3/x1-vault-memory
@@ -8,7 +8,7 @@ metadata:
   clawdbot:
     emoji: "🦞"
 requires:
-  env: ["PINATA_JWT"]
+  env: ["PINATA_JWT", "X1_RPC_URL"]
   primaryEnv: "PINATA_JWT"
 files: ["src/*"]
 tags:
@@ -28,9 +28,9 @@ Encrypted, decentralized memory backup for OpenClaw agents — powered by IPFS a
 
 ## What It Does
 
-Backs up your agent's brain (identity, personality, memories) with military-grade encryption, stores it on IPFS, and anchors the CID on the X1 blockchain. Only your wallet keypair can decrypt.
+Backs up your agent's brain (identity, personality, memories) with AES-256-GCM military-grade encryption, stores it on IPFS, and anchors the CID on the X1 blockchain. Only your wallet keypair can decrypt.
 
-Pipeline: Agent Files > tar.gz > NaCl Encrypt > IPFS Upload > X1 On-Chain Anchor
+Pipeline: Agent Files > tar.gz > AES-256-GCM Encrypt > IPFS Upload > X1 On-Chain Anchor
 
 ### Why This Exists
 
@@ -38,7 +38,7 @@ Servers die. Containers get wiped. One bad rm -rf and your agent's identity is g
 
 ### Key Features
 
-- NaCl secretbox encryption — uses your wallet keypair as the key. Only you can decrypt.
+- AES-256-GCM encryption — uses your wallet keypair as the key. Only you can decrypt.
 - IPFS storage — your data lives on a decentralized network, not a single server.
 - X1 blockchain anchoring — every backup CID is recorded on-chain for permanent, verifiable proof.
 - Self-healing restore — one command to download, decrypt, and restore all agent files.
@@ -240,7 +240,7 @@ Shows which files would be backed up without uploading or spending tokens.
 
 ## Security
 
-- NaCl secretbox encryption derived from your wallet secret key
+- AES-256-GCM authenticated encryption derived from your wallet secret key
 - SHA-256 integrity checksums on every backup and restore
 - Only your keypair can decrypt — even if someone finds the CID, data stays private
 - Stored on IPFS, not a single server
@@ -269,7 +269,7 @@ Heartbeat check every 6 hours:
 
 ## Tech Stack
 
-- Encryption: TweetNaCl (NaCl secretbox)
+- Encryption: AES-256-GCM (authenticated encryption)
 - Integrity: SHA-256 checksums
 - IPFS Storage: Pinata API (JWT auth)
 - Blockchain: X1 Mainnet (SVM-compatible L1)
