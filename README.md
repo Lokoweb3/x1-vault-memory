@@ -127,14 +127,48 @@ node x1-vault-memory/src/backup.js
 
 Output:
 ```
+Archive checksum: a1b2c3d4e5f6...
 Backup uploaded, CID: QmExampleCID123456789abcdefghijklmnopqrstuv
+X1 Transaction: 5h1XWikXsqVoDEnK54DbG5Jurxnwqf5puVD5FL28JByCBhatCk7X2mnMCyipLvYmsNDjdrvvmDtQZpPRZuwWqccV
+Explorer: https://explorer.mainnet.x1.xyz/tx/...
 Logged backup CID to vault-log.json
 ```
 
+**Features:**
+- ✅ SHA-256 checksum generated before encryption
+- ✅ Checksum stored in encrypted payload for integrity verification
+- ✅ CID anchored to X1 blockchain with transaction hash
+
 ### Restore
 ```bash
+# Full restore
 node x1-vault-memory/src/restore.js <CID>
+
+# Selective restore (only memory folder)
+node x1-vault-memory/src/restore.js <CID> --only memory/
 ```
+
+**Features:**
+- ✅ Automatic integrity verification (checksum must match)
+- ✅ Aborts with error if archive is corrupted
+- ✅ Selective restore — restore specific paths without overwriting identity files
+
+### List Backups
+```bash
+node x1-vault-memory/src/list.js
+```
+
+Shows numbered list of all backups with timestamps and anchor status.
+
+### Heartbeat Check
+```bash
+node x1-vault-memory/src/heartbeat.js
+```
+
+Self-healing check:
+- Verifies SOUL.md and memory/ exist and aren't empty
+- Auto-restores from latest backup if issues detected
+- Run this on agent startup for self-healing memory
 
 ### Shell Wrappers
 ```bash
