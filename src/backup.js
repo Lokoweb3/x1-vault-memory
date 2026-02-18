@@ -55,21 +55,16 @@ async function createBackup() {
   const secretKey = Buffer.from(wallet.secretKey);
   // Derive symmetric key from secretKey using SHA-256
   const key = crypto.createHash('sha256').update(secretKey).digest();
+  // Encrypt the payload
   const iv = crypto.randomBytes(12); // for AES-256-GCM
   const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
-  const input = fs.createReadStream(payloadPath);
+  const payloadBuffer = fs.readFileSync(payloadPath);
+  const encrypted = Buffer.concat([cipher.update(payloadBuffer), cipher.final()]);
+  const authTag = cipher.getAuthTag(); // 16 bytes
+  
+  // Write: IV (12 bytes) + ciphertext + authTag (16 bytes)
   const encryptedPath = archivePath + '.enc';
-  const output = fs.createWriteStream(encryptedPath);
-  input.pipe(cipher).pipe(output);
-  await new Promise((res, rej) => {
-    output.on('finish', () => {
-      // Append auth tag
-      const authTag = cipher.getAuthTag();
-      fs.appendFileSync(encryptedPath, authTag);
-      res();
-    });
-    output.on('error', rej);
-  });
+  fs.writeFileSync(encryptedPath, Buffer.concat([iv, encrypted, authTag]));
 
   // Upload encrypted backup to Pinata
   const cid = await uploadToIPFS(encryptedPath);
