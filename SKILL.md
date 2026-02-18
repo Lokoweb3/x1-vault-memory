@@ -1,7 +1,7 @@
 ---
 name: x1-vault-memory
 description: Backup and restore OpenClaw agent memory to IPFS with AES-256-GCM encryption and X1 blockchain CID anchoring
-version: 1.1.0
+version: 1.1.1
 author: Lokoweb3
 homepage: https://github.com/Lokoweb3/x1-vault-memory
 metadata:
@@ -109,6 +109,8 @@ The JWT token does not expire unless you manually revoke it in the Pinata dashbo
 sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
 export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
 ```
+
+> **Security Note:** Always verify the installer URL before running. The official Anza/Solana installer is hosted at `release.anza.xyz`. If in doubt, cross-reference with https://docs.anza.xyz/cli/install
 
 > **Note:** `release.anza.xyz` is the official Anza/Solana installer. For more details, see https://docs.anza.xyz/cli/install
 
