@@ -10,6 +10,7 @@ metadata:
 requires:
   env: ["PINATA_JWT", "X1_RPC_URL"]
   primaryEnv: "PINATA_JWT"
+  configPaths: ["x1_vault_cli/wallet.json"]
 files: ["src/*"]
 tags:
   - backup
@@ -25,6 +26,14 @@ tags:
 # X1 Vault Memory
 
 Encrypted, decentralized memory backup for OpenClaw agents — powered by IPFS and X1 blockchain.
+
+## Requirements
+
+| Name | Type | Description |
+|------|------|-------------|
+| `PINATA_JWT` | env | Required. Your Pinata API token for IPFS uploads. Get it at https://app.pinata.cloud |
+| `X1_RPC_URL` | env | Required. The X1 RPC endpoint. Mainnet: `https://rpc.mainnet.x1.xyz` |
+| `x1_vault_cli/wallet.json` | config | Required. Your X1 wallet keypair file. Used for encryption and blockchain anchoring. |
 
 ## What It Does
 
