@@ -195,9 +195,13 @@ CIDs are also recorded on-chain. Check your wallet's transaction history on the 
 ---
 
 ## Automation
+
 ```bash
-# Cron job - daily at 2am
-0 2 * * * cd /path/to/workspace && node x1-vault-memory/src/backup.js >> /var/log/vault-backup.log 2>&1
+# Weekly backup - Sundays at 2am
+0 2 * * 0 cd /path/to/workspace && node x1-vault-memory/src/backup.js >> /var/log/vault-backup.log 2>&1
+
+# Heartbeat check every 6 hours - auto-restores if files missing
+0 */6 * * * cd /path/to/workspace && node x1-vault-memory/src/heartbeat.js >> /var/log/vault-heartbeat.log 2>&1
 ```
 
 ---
