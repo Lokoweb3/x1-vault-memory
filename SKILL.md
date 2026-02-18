@@ -83,7 +83,7 @@ Pinata is the IPFS pinning service that stores your encrypted backups. The free 
 3. After login, click your profile icon in the top right corner
 4. Select API Keys from the dropdown menu
 5. Click the New Key button
-6. Toggle Admin access ON (or at minimum enable pinFileToIPFS permission)
+6. Enable only the pinFileToIPFS permission (Admin access is NOT required)
 7. Give the key a name like "x1-vault-memory"
 8. Click Create Key
 9. You will see three values: API Key, API Secret, and JWT
@@ -100,6 +100,8 @@ The JWT token does not expire unless you manually revoke it in the Pinata dashbo
 sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
 export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
 ```
+
+> **Note:** `release.anza.xyz` is the official Anza/Solana installer. For more details, see https://docs.anza.xyz/cli/install
 
 Verify installation:
 ```bash
@@ -157,7 +159,7 @@ Then set PINATA_JWT in your Docker .env file as shown in Option A.
 ### 4. Create a wallet keypair
 
 ```bash
-solana-keygen new --outfile wallet.json --no-bip39-passphrase
+solana-keygen new --outfile x1_vault_cli/wallet.json --no-bip39-passphrase
 ```
 
 Keep wallet.json safe. This is your encryption key AND your blockchain wallet. Never commit it to GitHub.
@@ -166,7 +168,7 @@ Keep wallet.json safe. This is your encryption key AND your blockchain wallet. N
 
 Get your wallet address:
 ```bash
-solana address --keypair wallet.json
+solana address --keypair x1_vault_cli/wallet.json
 ```
 
 Send XNT tokens to the address shown. You need approximately 0.002 XNT per backup transaction.
