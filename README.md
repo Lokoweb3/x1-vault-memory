@@ -16,13 +16,13 @@ Your agent's brain — personality, knowledge, memories — encrypted with your 
 
 ## How It Works
 ```
-Agent Files → tar.gz → Encrypt (NaCl) → Upload (IPFS/Pinata) → Record CID (X1 Blockchain)
+Agent Files → tar.gz → Encrypt (AES-256-GCM) → Upload (IPFS/Pinata) → Record CID (X1 Blockchain)
 ```
 
 1. **Bundle** — Compresses agent files (IDENTITY.md, SOUL.md, USER.md, TOOLS.md, memory/) into a tar.gz
-2. **Encrypt** — Encrypts the archive with your wallet's secret key using NaCl secretbox
+2. **Encrypt** — Encrypts the archive with your wallet's secret key using AES-256-GCM
 3. **Upload** — Pushes the encrypted blob to IPFS via Pinata's API
-4. **Record** — Stores the IPFS CID as a transaction on the X1 blockchain
+4. **Record** — Stores the IPFS CID on the X1 blockchain via Memo Program
 5. **Track** — Logs the CID and timestamp to vault-log.json
 
 Only your wallet keypair can decrypt. Even if someone finds the CID, your data stays private.
@@ -57,6 +57,7 @@ npm install
 ````````yaml
 environment:
   PINATA_JWT: ${PINATA_JWT}
+  X1_RPC_URL: https://rpc.mainnet.x1.xyz
 ```````
 
 3. Add PINATA_JWT to your .env file:
@@ -83,6 +84,8 @@ X1 is SVM-compatible, so it uses Solana CLI tools. Set your CLI to X1 mainnet:
 
 ````bash
 # Install Solana CLI if you dont have it
+# Note: release.anza.xyz is the official Anza/Solana installer
+# See https://docs.anza.xyz/cli/install for details
 sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
 
 # Set to X1 mainnet
@@ -98,16 +101,13 @@ export X1_RPC_URL="https://rpc.mainnet.x1.xyz"
 
 ### 2. Create a Wallet Keypair
 ```bash
-solana-keygen new --outfile wallet.json --no-bip39-passphrase
+solana-keygen new --outfile x1_vault_cli/wallet.json --no-bip39-passphrase
 
 # View your wallet address
-solana address --keypair wallet.json
-
-# View your private key (base58)
-cat wallet.json
+solana address --keypair x1_vault_cli/wallet.json
 
 # Check your balance
-solana balance --keypair wallet.json --url https://rpc.mainnet.x1.xyz
+solana balance --keypair x1_vault_cli/wallet.json --url https://rpc.mainnet.x1.xyz
 ```
 
 > ⚠️ **Keep wallet.json safe. Never commit it to GitHub. This is your encryption key.**
@@ -216,10 +216,10 @@ CIDs are also recorded on-chain. Check your wallet's transaction history on the 
 
 ## Security
 
-- 🔐 Encrypted with NaCl secretbox using your wallet's secret key
+- 🔐 Encrypted with AES-256-GCM using your wallet's secret key
 - 🔑 Only your keypair can decrypt
 - 📡 Stored on IPFS, not a single server
-- ⛓️ CID recorded on X1 blockchain for permanence
+- ⛓️ CID recorded on X1 blockchain via Memo Program for permanence
 - 🚫 Never share your wallet.json or PINATA_JWT
 
 ---
@@ -228,7 +228,7 @@ CIDs are also recorded on-chain. Check your wallet's transaction history on the 
 
 | Component | Technology |
 |-----------|-----------|
-| Encryption | TweetNaCl (secretbox) |
+| Encryption | AES-256-GCM |
 | IPFS Storage | Pinata API (JWT auth) |
 | Blockchain | X1 (SVM-compatible L1) |
 | Runtime | Node.js |
