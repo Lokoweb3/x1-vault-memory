@@ -2,9 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 
-// Validate CID - only allow alphanumeric characters
+// Validate CID - only allow alphanumeric characters, reject empty, max 128 chars
 function validateCID(cid) {
   if (!cid || typeof cid !== 'string') return false;
+  if (cid.length === 0 || cid.length > 128) return false;
   return /^[a-zA-Z0-9]+$/.test(cid);
 }
 
