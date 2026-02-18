@@ -30,7 +30,7 @@ async function restoreBackup(cid) {
   await downloadFromPinata(cid, encryptedPath);
 
   // Load wallet secret key
-  const walletPath = path.resolve(__dirname, '..', 'x1_vault_cli', 'wallet.json');
+  const walletPath = path.resolve(__dirname, '../..', 'x1_vault_cli', 'wallet.json');
   const wallet = JSON.parse(fs.readFileSync(walletPath, 'utf8'));
   const secretKey = Buffer.from(wallet.secretKey);
   const key = crypto.createHash('sha256').update(secretKey).digest();
@@ -49,7 +49,7 @@ async function restoreBackup(cid) {
   fs.writeFileSync(archivePath, decrypted);
 
   // Extract tar.gz archive
-  const cwd = path.resolve(__dirname, '..');
+  const cwd = path.resolve(__dirname, '../..');
   await tar.x({ file: archivePath, cwd });
   console.log('Backup restored to workspace');
 }
