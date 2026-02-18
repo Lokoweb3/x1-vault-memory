@@ -34,24 +34,61 @@ async function restoreBackup(cid) {
   const wallet = JSON.parse(fs.readFileSync(walletPath, 'utf8'));
   const secretKey = Buffer.from(wallet.secretKey);
   const key = crypto.createHash('sha256').update(secretKey).digest();
+  
   // Read encrypted file and auth tag (last 16 bytes for GCM)
   const data = fs.readFileSync(encryptedPath);
   const authTag = data.slice(data.length - 16);
   const encryptedData = data.slice(0, data.length - 16);
-  const iv = encryptedData.slice(0, 12); // we stored IV at start? Actually we prepended IV when encrypting.
-  // In backup.js we wrote IV separately, not stored. To simplify, re‑read IV from file start (first 12 bytes) and rest is ciphertext.
-  // Since backup.js wrote raw ciphertext after piping cipher (which automatically writes IV? no, we wrote only ciphertext). We'll instead re‑generate IV from first 12 bytes of encryptedData.
+  const iv = encryptedData.slice(0, 12);
   const ciphertext = encryptedData.slice(12);
-  const decipher = crypto.createDecipheriv('aes-256-gcm', key, encryptedData.slice(0, 12));
+  const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
   decipher.setAuthTag(authTag);
   const decrypted = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
-  const archivePath = path.resolve(__dirname, 'backup.tar.gz');
-  fs.writeFileSync(archivePath, decrypted);
+  
+  // Write decrypted payload
+  const payloadPath = path.resolve(__dirname, 'payload.tar');
+  fs.writeFileSync(payloadPath, decrypted);
+  console.log('Decrypted payload extracted');
 
-  // Extract tar.gz archive
+  // Extract payload to get archive + checksum
+  const tempDir = path.resolve(__dirname, 'temp_restore');
+  if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
+  
+  await tar.x({ file: payloadPath, cwd: tempDir });
+  console.log('Payload extracted');
+
+  // Read checksum and verify
+  const checksumPath = path.join(tempDir, 'checksum.txt');
+  const archivePath = path.join(tempDir, 'backup.tar.gz');
+  
+  if (!fs.existsSync(checksumPath) || !fs.existsSync(archivePath)) {
+    throw new Error('Payload missing checksum.txt or backup.tar.gz');
+  }
+  
+  const expectedChecksum = fs.readFileSync(checksumPath, 'utf8').trim();
+  const archiveBuffer = fs.readFileSync(archivePath);
+  const actualChecksum = crypto.createHash('sha256').update(archiveBuffer).digest('hex');
+  
+  console.log('Expected checksum:', expectedChecksum);
+  console.log('Actual checksum:', actualChecksum);
+  
+  if (expectedChecksum !== actualChecksum) {
+    console.error('ERROR: Checksum mismatch! Archive may be corrupted.');
+    console.error('Expected:', expectedChecksum);
+    console.error('Got:', actualChecksum);
+    process.exit(1);
+  }
+  
+  console.log('✓ Checksum verified — archive integrity confirmed');
+
+  // Extract archive to workspace
   const cwd = path.resolve(__dirname, '../..');
   await tar.x({ file: archivePath, cwd });
   console.log('Backup restored to workspace');
+  
+  // Cleanup temp files
+  fs.rmSync(tempDir, { recursive: true });
+  fs.unlinkSync(payloadPath);
 }
 
 const cid = process.argv[2];
