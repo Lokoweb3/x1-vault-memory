@@ -1,6 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
+
+// Validate CID - only allow alphanumeric characters
+function validateCID(cid) {
+  if (!cid || typeof cid !== 'string') return false;
+  return /^[a-zA-Z0-9]+$/.test(cid);
+}
 
 // Heartbeat check — verify memory files exist and aren't empty
 // Auto-restore if missing or corrupted
@@ -80,11 +86,18 @@ async function heartbeat() {
     process.exit(1);
   }
   
+  // Validate CID before using in shell command
+  if (!validateCID(latestCID)) {
+    console.error('ERROR: Invalid CID format. CID must only contain letters and numbers.');
+    console.error('CID received:', latestCID);
+    process.exit(1);
+  }
+
   console.log(`Latest backup CID: ${latestCID}`);
   console.log('Triggering restore...\n');
-  
+
   try {
-    execSync(`node ${path.join(__dirname, 'restore.js')} ${latestCID}`, {
+    execFileSync('node', [path.join(__dirname, 'restore.js'), latestCID], {
       stdio: 'inherit',
       cwd: __dirname
     });
