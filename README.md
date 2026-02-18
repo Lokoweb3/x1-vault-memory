@@ -36,7 +36,7 @@ Only your wallet keypair can decrypt. Even if someone finds the CID, your data s
 | **Node.js** | v18+ |
 | **Pinata Account** | Free at [app.pinata.cloud](https://app.pinata.cloud) |
 | **Solana/X1 Wallet** | Keypair JSON file |
-| **X1 Tokens** | Testnet or mainnet XN for transaction fees |
+| **X1 Tokens** | Mainnet XN for transaction fees |
 | **OpenClaw** | Running instance with workspace access |
 
 ---
@@ -73,78 +73,27 @@ docker compose down && docker compose up -d
 5. Tell your agent about the skill:
 > "You have a new skill called x1-vault-memory. You can backup your memory with node x1-vault-memory/src/backup.js and restore with node x1-vault-memory/src/restore.js CID. Save this to your memory."
 
-
-### For OpenClaw Agents
-
-1. Clone into your OpenClaw workspace:
-``````````bash
-cd /home/node/.openclaw/workspace
-git clone https://github.com/Lokoweb3/x1-vault-memory.git
-cd x1-vault-memory
-npm install
-`````````
-
-2. Add environment variables to your docker-compose.yml:
-````````yaml
-environment:
-  PINATA_JWT: ${PINATA_JWT}
-```````
-
-3. Add PINATA_JWT to your .env file:
-``````bash
-echo "PINATA_JWT=your_token_here" >> ~/openclaw/.env
-`````
-
-4. Restart the container:
-````bash
-cd ~/openclaw
-docker compose down && docker compose up -d
-```
-
-5. Tell your agent about the skill:
-> "You have a new skill called x1-vault-memory. You can backup your memory with node x1-vault-memory/src/backup.js and restore with node x1-vault-memory/src/restore.js CID. Save this to your memory."
-
-```bash
-cd /path/to/openclaw/workspace
-git clone https://github.com/Lokoweb3/x1-vault-memory.git
-cd x1-vault-memory
-npm install
-```
-
 ---
 
 ## Setup
 
-### 0. Configure for X1 Testnet
+### 0. Configure for X1 Mainnet
 
-X1 is SVM-compatible, so it uses Solana CLI tools. Set your CLI to X1 testnet:
-
-````bash
-# Install Solana CLI if you dont have it
-sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
-
-# Set to X1 testnet
-solana config set --url https://rpc.testnet.x1.xyz
-```
-
-
-### 0. Configure for X1 Testnet
-
-X1 is SVM-compatible, so it uses Solana CLI tools. Set your CLI to X1 testnet:
+X1 is SVM-compatible, so it uses Solana CLI tools. Set your CLI to X1 mainnet:
 
 ````bash
 # Install Solana CLI if you dont have it
 sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
 
-# Set to X1 testnet
-solana config set --url https://rpc.testnet.x1.xyz
+# Set to X1 mainnet
+solana config set --url https://rpc.mainnet.x1.xyz
 ```
 
 
 ### 1. Set Environment Variables
 ```bash
 export PINATA_JWT="your_pinata_jwt_here"
-export X1_RPC_URL="https://rpc.testnet.x1.xyz"
+export X1_RPC_URL="https://rpc.mainnet.x1.xyz"
 ```
 
 ### 2. Create a Wallet Keypair
@@ -158,23 +107,14 @@ solana address --keypair wallet.json
 cat wallet.json
 
 # Check your balance
-solana balance --keypair wallet.json --url https://rpc.testnet.x1.xyz
+solana balance --keypair wallet.json --url https://rpc.mainnet.x1.xyz
 ```
 
 > ⚠️ **Keep wallet.json safe. Never commit it to GitHub. This is your encryption key.**
 
 ### 3. Fund Your Wallet
 
-**Testnet:**
-```bash
-solana airdrop 1 --url https://rpc.testnet.x1.xyz --keypair wallet.json
-```
-
-Or use a faucet:
-- [faucet.x1.wiki](https://faucet.x1.wiki) (recommended)
-- [faucet.testnet.x1.xyz](https://faucet.testnet.x1.xyz)
-
-**Mainnet:** Transfer XN tokens to your wallet address.
+**Mainnet:** Transfer XN tokens to your wallet address from an exchange or existing wallet.
 
 ---
 
@@ -216,7 +156,7 @@ Every backup is logged to vault-log.json:
 ]
 ```
 
-CIDs are also recorded on-chain. Check your wallet's transaction history on the [X1 Explorer](https://explorer.testnet.x1.xyz).
+CIDs are also recorded on-chain. Check your wallet's transaction history on the [X1 Explorer](https://explorer.mainnet.x1.xyz).
 
 ---
 

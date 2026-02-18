@@ -12,7 +12,7 @@ Encrypts your agent's memory files, uploads them to IPFS, and records the CID on
 Each user needs their own:
 - **Pinata account** (free at https://app.pinata.cloud) — for IPFS uploads
 - **Solana/X1 wallet keypair** — for encryption and on-chain transactions
-- **X1 testnet tokens** — for transaction fees
+- **X1 mainnet tokens (XN)** — for transaction fees
 
 ## Setup
 
@@ -25,7 +25,7 @@ npm install
 ### 2. Set environment variables
 ```bash
 export PINATA_JWT="your_pinata_jwt_token"
-export X1_RPC_URL="https://rpc.testnet.x1.xyz"  # or mainnet
+export X1_RPC_URL="https://rpc.mainnet.x1.xyz"
 ```
 
 ### 3. Create a wallet keypair
@@ -34,7 +34,7 @@ solana-keygen new --outfile wallet.json --no-bip39-passphrase
 ```
 
 ### 4. Fund the wallet
-Get testnet tokens from https://faucet.testnet.x1.xyz
+Fund your wallet with XN tokens from an exchange or existing wallet
 
 ## Usage
 
