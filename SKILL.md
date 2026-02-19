@@ -1,7 +1,7 @@
 ---
 name: x1-vault-memory
 description: Backup and restore OpenClaw agent memory to IPFS with AES-256-GCM encryption and X1 blockchain CID anchoring
-version: 1.1.2
+version: 0.2.0
 author: Lokoweb3
 homepage: https://github.com/Lokoweb3/x1-vault-memory
 metadata:
