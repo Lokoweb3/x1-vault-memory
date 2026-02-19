@@ -27,13 +27,15 @@ tags:
 
 Encrypted, decentralized memory backup for OpenClaw agents — powered by IPFS and X1 blockchain.
 
-## Environment Variables
+## Required Configuration
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `PINATA_JWT` | ✅ Yes | — | Your Pinata API token for IPFS uploads. Get it at https://app.pinata.cloud |
 | `X1_RPC_URL` | ❌ No | `https://rpc.mainnet.x1.xyz` | The X1 RPC endpoint. Change only if using testnet or custom endpoint |
 | `x1_vault_cli/wallet.json` | ✅ Yes | — | Your X1 wallet keypair file. Used for encryption and blockchain anchoring. |
+
+> 🔴 **SECURITY WARNING:** Use a dedicated wallet with minimal XNT. Never use your primary wallet.
 
 ---
 
@@ -79,6 +81,8 @@ Servers die. Containers get wiped. One bad rm -rf and your agent's identity is g
 
 ✅ **No Solana CLI required** — we use `@solana/web3.js` directly.
 
+> 🔴 **SECURITY WARNING:** Use a dedicated wallet with minimal XNT. Never use your primary wallet.
+
 ---
 
 ## How to Get XNT Tokens
@@ -117,6 +121,8 @@ The JWT token does not expire unless you manually revoke it in the Pinata dashbo
 ---
 
 ## Setup
+
+> 🔴 **SECURITY WARNING:** Use a dedicated wallet with minimal XNT. Never use your primary wallet.
 
 ### 1. Install Node dependencies
 
@@ -224,7 +230,14 @@ node src/heartbeat.js
 
 Monitors agent file integrity. If critical files are missing or corrupted, automatically triggers a restore from the latest backup.
 
-> ⚠️ **Opt-in Only** — Heartbeat auto-restore must be explicitly scheduled via cron. It is NOT automatic. Add to crontab: `0 */6 * * * cd /path/to/workspace && node x1-vault-memory/src/heartbeat.js >> /var/log/vault-heartbeat.log 2>&1`
+> ⚠️ **Opt-in Only** — Heartbeat auto-restore must be explicitly scheduled via cron. It is NOT automatic.
+> 
+> **Add to crontab:**
+> ```bash
+> 0 */6 * * * cd /path/to/workspace && node x1-vault-memory/src/heartbeat.js >> /var/log/vault-heartbeat.log 2>&1
+> ```
+> 
+> **Note:** Heartbeat auto-restore is disabled by default and must be explicitly enabled via cron.
 
 ### Dry Run
 ```bash
@@ -263,6 +276,8 @@ Shows which files would be backed up without uploading or spending tokens.
 - Stored on IPFS, not a single server
 - CID anchored on X1 blockchain for tamper-proof records
 - Never share your `wallet.json` or `PINATA_JWT`
+
+> 🔴 **SECURITY WARNING:** Use a dedicated wallet with minimal XNT. Never use your primary wallet.
 
 ---
 
