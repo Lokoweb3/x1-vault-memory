@@ -258,3 +258,7 @@ MIT
 ---
 
 **Built by [Lokoweb3](https://github.com/Lokoweb3) with Loko_AI 🦞**
+
+---
+
+[**GitHub Repository**](https://github.com/Lokoweb3/x1-vault-memory) | [**Documentation**](https://docs.openclaw.ai)

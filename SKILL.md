@@ -300,4 +300,8 @@ Heartbeat check every 6 hours:
 - Pinata: https://app.pinata.cloud
 - Solana CLI: https://docs.anza.xyz/cli/install
 
-Built by Lokoweb3
+Built by [Lokoweb3](https://github.com/Lokoweb3)
+
+---
+
+[GitHub Repository](https://github.com/Lokoweb3/x1-vault-memory) | [OpenClaw Docs](https://docs.openclaw.ai)
