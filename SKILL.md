@@ -7,6 +7,8 @@ homepage: https://github.com/Lokoweb3/x1-vault-memory
 metadata:
   clawdbot:
     emoji: "🦞"
+  openclaw:
+    instructionOnly: false
 requires:
   env: ["PINATA_JWT"]
   primaryEnv: "PINATA_JWT"
