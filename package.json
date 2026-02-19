@@ -26,12 +26,9 @@
     "configPaths": ["x1_vault_cli/wallet.json"]
   },
   "openclaw": {
-    "skill": "x1-vault-memory",
-    "instructionOnly": false,
-    "requires": {
-      "env": ["PINATA_JWT", "X1_RPC_URL"],
-      "configPaths": ["x1_vault_cli/wallet.json"]
-    }
+    "type": "runnable",
+    "requiredEnv": ["PINATA_JWT", "X1_RPC_URL"],
+    "requiredConfig": ["x1_vault_cli/wallet.json"]
   },
   "engines": {
     "node": ">=18.0.0"
